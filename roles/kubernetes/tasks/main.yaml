@@ -1,0 +1,52 @@
+---
+- name: install docker and git
+  yum: 
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - docker
+    - git
+
+- name: fetch git scratch files and yaml files
+  shell: '{{ item }}'
+  with_items:
+  - rm -rf /tmp/*
+  - systemctl start docker
+  - 'git clone {{ k8s_scratch_url }} /tmp/kubescratch'
+  - mv /tmp/kubescratch/kube /tmp
+  - 'wget -P /tmp {{ k8s_url }}'
+  - 'wget -P /tmp {{ calico_etcd_url }}'
+  - 'wget -P /tmp {{ calico_rbac_url }}'
+  - 'wget -P /tmp {{ calico_url }}'
+  - 'wget -P /tmp {{ kube_dashboard_url }}'
+ 
+- name: move files
+  shell: 'cd /tmp && {{ item }}'
+  with_items:
+  - tar zxvf kubernetes-node-linux-amd64.tar.gz
+  - mkdir /tmp/kube/images
+  - mv kubernetes/node/bin/kubectl kube/bin/
+  - mv kubernetes/node/bin/kubelet kube/bin/
+  - mv kubernetes/node/bin/kubeadm kube/bin/
+  - mv etcd.yaml kube/conf/net/
+  - mv rbac.yaml kube/conf/net/
+  - mv calico.yaml kube/conf/net/
+  - mv kubernetes-dashboard.yaml kube/conf/dashboard
+
+- name: generate kubeadm config
+  template: src=/etc/ansible/roles/kubernetes/templates/kubeadm.yaml.j2 dest=/tmp/kube/kubeadm.yaml mode=0644
+
+- name: run kubeadm
+  shell: 'cd /tmp/kube/shell && {{ item }}'
+  with_items:
+  - sh init.sh && sh master.sh 
+
+- name: save docker images and tar
+  shell: 'cd /tmp/kube/images && {{ item }}'
+  with_items:
+  -  docker save -o images.tar $(docker images|grep age|awk '{print $1":"$2}')
+
+- name:  tar
+  shell: 'cd /tmp && {{ item }}'
+  with_items:
+  - tar zcvf kube{{ k8s_version }}.tar.gz kube
