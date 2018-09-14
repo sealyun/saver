@@ -19,6 +19,18 @@
   - 'wget -P /tmp {{ calico_rbac_url }}'
   - 'wget -P /tmp {{ calico_url }}'
   - 'wget -P /tmp {{ kube_dashboard_url }}'
+
+- name: "Add dashboard Nodeport"
+  lineinfile:
+     dest: "/tmp/kubernetes-dashboard.yaml"
+     line: "  type: NodePort"
+     insertafter: 'targetPort'
+ 
+- name: "add dashboard nodeport"
+  lineinfile:
+     dest: "/tmp/kubernetes-dashboard.yaml"
+     line: "      nodePort: 32000"
+     insertafter: 'targetPort'
  
 - name: move files
   shell: 'cd /tmp && {{ item }}'
@@ -34,7 +46,7 @@
   - mv kubernetes-dashboard.yaml kube/conf/dashboard
 
 - name: generate kubeadm config
-  template: src=/etc/ansible/roles/kubernetes/templates/kubeadm.yaml.j2 dest=/tmp/kube/kubeadm.yaml mode=0644
+  template: src=/etc/ansible/roles/kubernetes/templates/kubeadm.yaml.j2 dest=/tmp/kube/conf/kubeadm.yaml mode=0644
 
 - name: run kubeadm
   shell: 'cd /tmp/kube/shell && {{ item }}'
@@ -44,7 +56,7 @@
 - name: save docker images and tar
   shell: 'cd /tmp/kube/images && {{ item }}'
   with_items:
-  -  docker save -o images.tar $(docker images|grep age|awk '{print $1":"$2}')
+  -  docker save -o images.tar $(docker images|grep ago|awk '{print $1":"$2}')
 
 - name:  tar
   shell: 'cd /tmp && {{ item }}'

@@ -1,5 +1,5 @@
 [master]
-47.254.67.16 name=node01 
+47.254.73.57 name=node01 
 
 [all:vars]
 k8s_version=1.11.3
