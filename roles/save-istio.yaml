@@ -1,7 +1,7 @@
 ---
-- hosts: k8s-all
+- hosts: master
   roles:
-  - { role: kube-proxy }
+  - { role: istio }
 
 #- hosts: slb
 #  roles:

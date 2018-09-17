@@ -1,16 +1,75 @@
 ---
-#- name: pull calico image
-#  shell: 'docker pull {{ item }}'
-#  with_items:
-#    - quay.io/calico/node:v3.2.0
-#    - quay.io/calico/cni:v3.2.0
-#    - quay.io/calico/kube-controllers:v3.2.0
+- name: install socat
+  yum: 
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - socat
 
-- name: copy kubernetes.tar.gz
-  copy: 'src=/data/kube{{ k8s_version }}.tar.gz dest=/root/ mode=0644'
-
-- name: init every node 
+- name: download helm
   shell: 'cd /root && {{ item }}'
   with_items:
-  - tar zxvf kube{{ k8s_version }}.tar.gz
-  - cd kube/shell && sh init.sh
+  - 'wget https://storage.googleapis.com/kubernetes-helm/helm-{{ helm_version }}-linux-amd64.tar.gz'
+  - 'tar zxvf helm-{{ helm_version }}-linux-amd64.tar.gz'
+  - cp linux-amd64/helm /usr/bin 
+
+- name: generate tiller service account
+  template: src=/etc/ansible/roles/istio/templates/helmserviceaccount.yaml.j2 dest=/tmp/helmserviceaccount.yaml mode=0644
+ 
+- name: install tiller
+  shell: 'cd /tmp && {{ item }}'
+  with_items:
+  - kubectl create -f  helmserviceaccount.yaml || true
+  - helm init  --service-account tiller --upgrade #  如果已安装更新加 --upgrade 参数
+  - sleep 30 # wait for tilter
+  - helm list
+
+- name: down load istio
+  shell: 'cd /root && {{ item }}'
+  with_items:
+  - 'wget https://github.com/istio/istio/releases/download/{{ istio_version }}/istio-{{ istio_version }}-linux.tar.gz'
+  - 'tar zxvf istio-{{ istio_version }}-linux.tar.gz'
+
+- name: install istio
+  shell: 'cd /root/istio-{{ istio_version }}/ && {{ item }}'
+  with_items:
+  - export PATH=$PWD/bin:$PATH
+  - cp $PWD/bin/* /usr/bin
+
+  - helm del --purge istio || true
+# - kubectl delete -f <(istioctl kube-inject -f samples/bookinfo/platform/kube/bookinfo.yaml) || true
+# - kubectl delete -f samples/bookinfo/networking/bookinfo-gateway.yaml || true
+# - kubectl delete -f samples/bookinfo/networking/destination-rule-all.yaml || true
+  - kubectl delete -f install/kubernetes/helm/istio/templates/crds.yaml -n istio-system
+
+  - helm install install/kubernetes/helm/istio  --name istio --namespace istio-system --set gateways.istio-ingressgateway.type=NodePort --set gateways.istio-egressgateway.type=NodePort
+  - istioctl kube-inject -f samples/bookinfo/platform/kube/bookinfo.yaml | kubectl apply -f /dev/stdin
+  - kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
+  - kubectl apply -f samples/bookinfo/networking/destination-rule-all.yaml
+    #- sleep 100  # for images download
+
+#- name: save images and bin
+#  shell: 'cd /root/istio-{{ istio_version }}/ && {{ item }}'
+#  with_items:
+#
+#- name: tar all files
+#  shell: 'cd /root/istio-{{ istio_version }}/ && {{ item }}'
+#  with_items:
+
+
+- name: save files
+  shell: 'cd /root/ && {{ item }}'
+  with_items:
+  - mkdir istio
+  - mv istio-{{ istio_version }}-linux.tar.gz istio
+  - mv helm-{{ helm_version }}-linux-amd64.tar.gz istio
+
+- name: save docker images
+  shell: 'cd /root/istio && {{ item }}'
+  with_items:
+  - "docker save -o images.tar $(docker images|grep istio|awk '{print $1\":\"$2}') {{ istio_images }}"
+
+- name: tar all files
+  shell: 'cd /root/ && {{ item }}'
+  with_items:
+  - 'tar zxvf istio-{{ istio_version }}.tar.gz istio'

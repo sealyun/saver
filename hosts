@@ -11,3 +11,10 @@ calico_rbac_url=https://docs.projectcalico.org/v3.2/getting-started/kubernetes/i
 calico_url=https://docs.projectcalico.org/v3.2/getting-started/kubernetes/installation/hosted/calico.yaml
 
 kube_dashboard_url=https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.0/src/deploy/recommended/kubernetes-dashboard.yaml
+
+helm_version=v2.10.0
+
+istio_version=1.0.2
+
+istio_images=gcr.io/kubernetes-helm/tiller:v2.10.0 docker.io/prom/prometheus:v2.3.1 docker.io/prom/statsd-exporter:v0.6.0\
+  quay.io/coreos/hyperkube:v1.7.6_coreos.0]
