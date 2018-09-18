@@ -16,5 +16,4 @@ helm_version=v2.10.0
 
 istio_version=1.0.2
 
-istio_images=gcr.io/kubernetes-helm/tiller:v2.10.0 docker.io/prom/prometheus:v2.3.1 docker.io/prom/statsd-exporter:v0.6.0\
-  quay.io/coreos/hyperkube:v1.7.6_coreos.0]
+istio_images=gcr.io/kubernetes-helm/tiller:v2.10.0 docker.io/prom/prometheus:v2.3.1 docker.io/prom/statsd-exporter:v0.6.0 quay.io/coreos/hyperkube:v1.7.6_coreos.0

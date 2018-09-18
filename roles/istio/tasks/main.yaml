@@ -9,6 +9,7 @@
 - name: download helm
   shell: 'cd /root && {{ item }}'
   with_items:
+  - rm -rf /tmp/* 
   - 'wget https://storage.googleapis.com/kubernetes-helm/helm-{{ helm_version }}-linux-amd64.tar.gz'
   - 'tar zxvf helm-{{ helm_version }}-linux-amd64.tar.gz'
   - cp linux-amd64/helm /usr/bin 
@@ -58,18 +59,23 @@
 
 
 - name: save files
-  shell: 'cd /root/ && {{ item }}'
+  shell: 'cd /tmp/ && {{ item }}'
   with_items:
   - mkdir istio
-  - mv istio-{{ istio_version }}-linux.tar.gz istio
-  - mv helm-{{ helm_version }}-linux-amd64.tar.gz istio
+  - mv /root/istio-{{ istio_version }}-linux.tar.gz istio
+  - mv /root/helm-{{ helm_version }}-linux-amd64.tar.gz istio
+  - mv helmserviceaccount.yaml istio
+
+- name: generate install shell script
+  template: src=/etc/ansible/roles/istio/templates/install.sh.j2 dest=/tmp/istio/install.sh mode=0644
 
 - name: save docker images
-  shell: 'cd /root/istio && {{ item }}'
+  shell: 'cd /tmp/istio && {{ item }}'
   with_items:
-  - "docker save -o images.tar $(docker images|grep istio|awk '{print $1\":\"$2}') {{ istio_images }}"
+  - docker save -o istio-images.tar $(docker images|grep istio|awk '{print $1":"$2}') 
+  - 'docker save -o other-images.tar {{ istio_images }}'
 
 - name: tar all files
-  shell: 'cd /root/ && {{ item }}'
+  shell: 'cd /tmp/ && {{ item }}'
   with_items:
-  - 'tar zxvf istio-{{ istio_version }}.tar.gz istio'
+  - 'tar zcvf istio-{{ istio_version }}.tar.gz istio'
