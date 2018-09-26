@@ -17,7 +17,6 @@
   - 'wget -P /tmp {{ k8s_url }}'
   - 'wget -P /tmp {{ calico_etcd_url }}'
   - 'wget -P /tmp {{ calico_rbac_url }}'
-  - 'wget -P /tmp {{ calico_url }}'
   - 'wget -P /tmp {{ kube_dashboard_url }}'
 
 - name: "Add dashboard Nodeport"
@@ -42,11 +41,13 @@
   - mv kubernetes/node/bin/kubeadm kube/bin/
   - mv etcd.yaml kube/conf/net/
   - mv rbac.yaml kube/conf/net/
-  - mv calico.yaml kube/conf/net/
   - mv kubernetes-dashboard.yaml kube/conf/dashboard
 
 - name: generate kubeadm config
   template: src=/etc/ansible/roles/kubernetes/templates/kubeadm.yaml.j2 dest=/tmp/kube/conf/kubeadm.yaml mode=0644
+
+- name: generate calico config
+  template: src=/etc/ansible/roles/kubernetes/templates/calico.yaml.j2 dest=/tmp/kube/conf/net/calico.yaml mode=0644
 
 - name: run kubeadm
   shell: 'cd /tmp/kube/shell && {{ item }}'
