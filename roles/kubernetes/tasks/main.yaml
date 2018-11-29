@@ -49,10 +49,13 @@
 - name: generate calico config
   template: src=/etc/ansible/roles/kubernetes/templates/calico.yaml.j2 dest=/tmp/kube/conf/net/calico.yaml mode=0644
 
+#- name: generate calico config
+#  template: src=/etc/ansible/roles/kubernetes/templates/kubernetes.repo.j2 dest=/etc/yum.repos.d/kubernetes.repo mode=0644
+
 - name: run kubeadm
   shell: 'cd /tmp/kube/shell && {{ item }}'
   with_items:
-  - sh init.sh && sh master.sh 
+  - sh init.sh && sh master.sh
 
 - name: save docker images and tar
   shell: 'cd /tmp/kube/images && {{ item }}'

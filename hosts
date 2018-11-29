@@ -1,9 +1,9 @@
 [master]
-47.254.73.57 name=node01 
+47.254.38.24 name=node01 
 
 [all:vars]
-k8s_version=1.11.3
-k8s_url=https://dl.k8s.io/v1.11.3/kubernetes-node-linux-amd64.tar.gz
+k8s_version=1.12.2
+k8s_url=https://dl.k8s.io/v1.12.2/kubernetes-node-linux-amd64.tar.gz
 k8s_scratch_url=https://github.com/sealyun/kubescratch
 
 calico_etcd_url=https://docs.projectcalico.org/v3.2/getting-started/kubernetes/installation/hosted/etcd.yaml
