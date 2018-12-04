@@ -50,7 +50,7 @@
       - 'docker cp kubeadm:/kubeadm /tmp/kube/bin'
       - 'docker stop kubeadm || true'
       - 'docker rm -f kubeadm || true'
-      - 'docker rmi -f  fanux/kubeadm:kubeadm-v1.12.3'
+      - 'docker rmi -f  fanux/kubeadm:kubeadm-v{{ k8s_version }} || true'
 
 - name: generate kubeadm config
   template: src=/etc/ansible/roles/kubernetes/templates/kubeadm.yaml.j2 dest=/tmp/kube/conf/kubeadm.yaml mode=0644
