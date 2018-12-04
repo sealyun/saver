@@ -1,0 +1,8 @@
+apiVersion: kubeadm.k8s.io/v1alpha2
+kind: MasterConfiguration
+networking:
+  podSubnet: 100.64.0.0/10
+kubernetesVersion: v{{ k8s_version }}
+kubeProxy:
+    config:
+        mode: "ipvs"

@@ -1,0 +1,13 @@
+---
+- hosts: master
+  roles:
+  - { role: prometheus }
+
+#- hosts: slb
+#  roles:
+#  - { role: haproxy }
+#  - { role: keepalived }
+#
+#- hosts: k8s-node
+#  roles:
+#    - [role: node]

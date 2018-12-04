@@ -1,0 +1,13 @@
+---
+- name: clone prometheus operator
+  shell: '{{ item }}'
+  with_items:
+     - 'git clone https://github.com/coreos/prometheus-operator'
+     - 'cd prometheus-operator/contrib/kube-prometheus/ && kubectl create -f manifests/ || true'
+     - 'cp -r manifests /tmp/kube/conf/prometheus'
+
+#- name: save docker images and tar
+#  shell: 'cd /tmp/kube/images && {{ item }}'
+#  with_items:
+#  -  docker save -o images.tar $(docker images|grep ago|awk '{print $1":"$2}')
+
