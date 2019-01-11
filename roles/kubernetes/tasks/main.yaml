@@ -38,19 +38,20 @@
   - mkdir /tmp/kube/images
   - mv kubernetes/node/bin/kubectl kube/bin/
   - mv kubernetes/node/bin/kubelet kube/bin/
+  - mv kubernetes/node/bin/kubeadm kube/bin/
   - mv etcd.yaml kube/conf/net/
   - mv rbac.yaml kube/conf/net/
   - mv kubernetes-dashboard.yaml kube/conf/dashboard
 
-- name: using new kubeadm
-  shell: 'cd /tmp && {{ item }}'
-  with_items:
-      - 'docker rm -f kubeadm || true' 
-      - 'docker run --name kubeadm -d fanux/kubeadm:kubeadm-v{{ k8s_version }} sleep 10000' 
-      - 'docker cp kubeadm:/kubeadm /tmp/kube/bin'
-      - 'docker stop kubeadm || true'
-      - 'docker rm -f kubeadm || true'
-      - 'docker rmi -f  fanux/kubeadm:kubeadm-v{{ k8s_version }} || true'
+#- name: using new kubeadm
+#  shell: 'cd /tmp && {{ item }}'
+#  with_items:
+#      - 'docker rm -f kubeadm || true' 
+#      - 'docker run --name kubeadm -d fanux/kubeadm:kubeadm-v{{ k8s_version }} sleep 10000' 
+#      - 'docker cp kubeadm:/kubeadm /tmp/kube/bin'
+#      - 'docker stop kubeadm || true'
+#      - 'docker rm -f kubeadm || true'
+#      - 'docker rmi -f  fanux/kubeadm:kubeadm-v{{ k8s_version }} || true'
 
 - name: generate kubeadm config
   template: src=/etc/ansible/roles/kubernetes/templates/kubeadm.yaml.j2 dest=/tmp/kube/conf/kubeadm.yaml mode=0644
