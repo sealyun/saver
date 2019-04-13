@@ -15,8 +15,9 @@
   - 'git clone {{ k8s_scratch_url }} /tmp/kubescratch'
   - mv /tmp/kubescratch/kube /tmp
   - 'wget -P /tmp {{ k8s_url }}'
-  - 'wget -P /tmp {{ calico_etcd_url }}'
-  - 'wget -P /tmp {{ calico_rbac_url }}'
+  - 'wget -P /tmp {{ calico_url }}'
+  - 'wget -P /tmp {{ sealos_url }}'
+  - 'wget -P /tmp {{ super_kubeadm_url }}'
   - 'wget -P /tmp {{ kube_dashboard_url }}'
 
 - name: "Add dashboard Nodeport"
@@ -38,10 +39,12 @@
   - mkdir /tmp/kube/images
   - mv kubernetes/node/bin/kubectl kube/bin/
   - mv kubernetes/node/bin/kubelet kube/bin/
-  - mv kubernetes/node/bin/kubeadm kube/bin/
-  - mv etcd.yaml kube/conf/net/
-  - mv rbac.yaml kube/conf/net/
+  - chmod +x kubeadm
+  - chmod +x sealos
+  - mv kubeadm kube/bin/
+  - mv sealos kube/bin/
   - mv kubernetes-dashboard.yaml kube/conf/dashboard
+  - docker pull fanux/lvscare:latest
 
 #- name: using new kubeadm
 #  shell: 'cd /tmp && {{ item }}'
