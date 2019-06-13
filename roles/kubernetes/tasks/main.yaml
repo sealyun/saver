@@ -73,29 +73,29 @@
 - name: clone prometheus operator
   shell: '{{ item }}'
   with_items:
-     - 'rm -rf prometheus-operator'
-     - 'git clone https://github.com/coreos/prometheus-operator'
+     - 'rm -rf kube-prometheus'
+     - 'git clone https://github.com/coreos/kube-prometheus'
 #    - 'kubectl --namespace monitoring port-forward svc/prometheus-k8s 9090'
 #    - 'kubectl --namespace monitoring port-forward svc/grafana 3000'
 #    - 'kubectl --namespace monitoring port-forward svc/alertmanager-main 9093'
 
 - name: "Add grafana Nodeport"
   lineinfile:
-     dest: "prometheus-operator/contrib/kube-prometheus/manifests/grafana-service.yaml"
+     dest: "kube-prometheus/manifests/grafana-service.yaml"
      line: "  type: NodePort"
      insertafter: 'targetPort'
  
 - name: "add grafana nodeport"
   lineinfile:
-     dest: "prometheus-operator/contrib/kube-prometheus/manifests/grafana-service.yaml"
+     dest: "kube-prometheus/manifests/grafana-service.yaml"
      line: "    nodePort: 30000"
      insertafter: 'targetPort'
 
 - name: create prometheus operator
   shell: '{{ item }}'
   with_items:
-     - 'cd prometheus-operator/contrib/kube-prometheus/ && kubectl create -f manifests/ || true'
-     - 'cd prometheus-operator/contrib/kube-prometheus/ && cp -r manifests /tmp/kube/conf/prometheus'
+     - 'cd kube-prometheus && kubectl create -f manifests/ || true'
+     - 'cd kube-prometheus && cp -r manifests /tmp/kube/conf/prometheus'
 
 - name: save docker images and tar
   shell: 'cd /tmp/kube/images && {{ item }}'
