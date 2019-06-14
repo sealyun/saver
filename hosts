@@ -1,9 +1,9 @@
 [master]
-47.244.0.114 name=node01 
+47.244.240.112 name=node01 
 
 [all:vars]
-k8s_version=1.14.2
-k8s_url=https://dl.k8s.io/v1.14.2/kubernetes-node-linux-amd64.tar.gz
+k8s_version=1.14.3
+k8s_url=https://dl.k8s.io/v1.14.3/kubernetes-node-linux-amd64.tar.gz
 k8s_scratch_url=https://github.com/sealyun/kubescratch
 
 calico_url=https://docs.projectcalico.org/v3.6/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
