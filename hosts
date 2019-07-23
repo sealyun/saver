@@ -1,5 +1,5 @@
 [master]
-47.244.110.21 name=node01 
+47.244.110.21 name=node01 ansible_ssh_private_key_file=k8s-saver.pem
 
 [all:vars]
 k8s_version=1.15.1
