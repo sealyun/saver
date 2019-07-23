@@ -1,9 +1,9 @@
 [master]
-47.244.240.112 name=node01 
+47.244.110.21 ansible_ssh_private_key_file=k8s-saver.pem name=node01 
 
 [all:vars]
-k8s_version=1.14.3
-k8s_url=https://dl.k8s.io/v1.14.3/kubernetes-node-linux-amd64.tar.gz
+k8s_version=1.14.4
+k8s_url=https://dl.k8s.io/v1.14.4/kubernetes-node-linux-amd64.tar.gz
 k8s_scratch_url=https://github.com/sealyun/kubescratch
 
 calico_url=https://docs.projectcalico.org/v3.6/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
@@ -16,6 +16,6 @@ istio_version=1.0.2
 
 istio_images=gcr.io/kubernetes-helm/tiller:v2.10.0 docker.io/prom/prometheus:v2.3.1 docker.io/prom/statsd-exporter:v0.6.0 quay.io/coreos/hyperkube:v1.7.6_coreos.0
 
-super_kubeadm_url=https://github.com/fanux/kube/releases/download/v1.0.0-kubeadm-lvscare-cert/kubeadm
+super_kubeadm_url=https://github.com/fanux/kube/releases/download/v1.15.0-lvscare/kubeadm
 
 sealos_url=https://github.com/fanux/sealos/releases/download/v2.0.3/sealos
