@@ -43,6 +43,7 @@
   - chmod +x sealos
   - mv kubeadm kube/bin/
   - mv sealos kube/bin/
+  - chmod +x kube/bin/kubelet-pre-start.sh
   - mv kubernetes-dashboard.yaml kube/conf/dashboard
   - docker pull fanux/lvscare:latest
 
